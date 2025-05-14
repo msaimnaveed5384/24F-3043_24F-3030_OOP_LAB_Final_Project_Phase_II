@@ -44,10 +44,10 @@ int main() {
         int exit_choice = 1;
 
         while (exit_choice != 0) {
-            cout << "\n======= 🌍 Turn " << turn_number << " =======" << endl;
+            cout << "\n=======  Turn " << turn_number << " =======" << endl;
 
             for (int i = 0; i < total_players; ++i) {
-                cout << "\n🎮 Turn for " << players[i]->name << endl;
+                cout << "\n Turn for " << players[i]->name << endl;
 
                 if (players[i]->is_ai) {
                     AIPlayer* ai_ptr = dynamic_cast<AIPlayer*>(players[i]);
@@ -201,11 +201,11 @@ int main() {
                         }
                         // Election trigger logic (after all players' turn)
                         if (lead->popularity < 40) {
-                            cout << "\n⚠️ Leadership popularity is low (" << lead->popularity << ")...\n";
+                            cout << "\n Leadership popularity is low (" << lead->popularity << ")...\n";
                             lead->hold_election(*pop); // Early election due to crisis
                         }
                         else if (turn_number % 10 == 0) {
-                            cout << "\n📆 Scheduled election for Turn " << turn_number << "\n";
+                            cout << "\n Scheduled election for Turn " << turn_number << "\n";
                             lead->hold_election(*pop); // Scheduled periodic election
                         }
                         // Log and save
@@ -237,7 +237,7 @@ int main() {
         for (int i = 0; i < total_players; ++i)
             delete players[i];
 
-        cout << "\n✅ Game Over. Summary and logs saved.\n";
+        cout << "\n Game Over. Summary and logs saved.\n";
     }
     catch (const GameException& e) {
         cout << "Game Error: " << e.what() << endl;
