@@ -64,8 +64,8 @@ public:
 	void display_society();
 	int total_population() const;
 };
-
-
+class Resource;
+class Leadership;
 class Population : public KingdomEntity {
 public:
 	int total;
@@ -73,13 +73,13 @@ public:
 	Society society;
 
 	Population();
-	void grow();
+	void grow(Resource& );
 	void shrink();
-	void check_revolt();
+	void check_revolt(Leadership&);
 	void update_total();
 	void status_report() const override;
 };
-
+class Economy;
 class Army : public KingdomEntity {
 public:
 	int soldiers;
@@ -88,7 +88,7 @@ public:
 	Army();
 	void recruit(Population& pop);
 	void feed();
-	void pay();
+	void pay(Economy& eco);
 	void status_report() const override;
 };
 
@@ -99,8 +99,10 @@ public:
 
 	Leadership();
 	void change_leader();
+	void hold_election(const Population& pop);  // New election function
 	void status_report() const override;
 };
+
 class Economy : public KingdomEntity {
 public:
 	int treasury;
@@ -140,16 +142,31 @@ public:
 };
 class Player {
 public:
-	string name;
-	int kingdom_id;
-	bool is_ai;
+    string name;
+    int kingdom_id;
+    bool is_ai;
 
-	shared_ptr<Army> army;
-	shared_ptr<Resource> resource;
+    shared_ptr<Army> army;
+    shared_ptr<Resource> resource;
 
-	Player();
-	void send_message(Player& recipient, string message);
+    Player();
+    virtual ~Player() {}  // ✅ This enables dynamic_cast!
+
+    void send_message(Player& recipient, string message);
 };
+
+class Alliance;
+// AI driven bonus task
+class AIPlayer : public Player {
+public:
+	AIPlayer();
+
+	void take_turn(Population& pop, Army& army, Leadership& lead,
+		Economy& eco, Bank& bank, Resource& res, Event& event,
+		Player& opponent, Alliance& alliance);
+
+};
+
 
 class Alliance {
 public:
@@ -172,13 +189,17 @@ public:
 	void complete_trade(Resource& sender_res, Resource& receiver_res);
 	void attempt_smuggling(Resource& sender_res, Resource& receiver_res);
 };
+const int MAP_SIZE = 16;
 
 class Map {
 public:
-	int player_positions[4]; // Simple array for positions (max 4 players)
+	int player_positions[4];        // player_positions[player_id] = cell number
+	bool occupied[MAP_SIZE];        // true if someone is standing in the cell
+
 	Map();
 	void move_player(int player_id, int new_position);
 	void display_map();
+	bool is_occupied(int cell) const;
 };
 
 class Conflict {
@@ -186,7 +207,6 @@ public:
 	static void declare_war(Player& attacker, Player& defender, Alliance& alliance);
 };
 
-//user defined Exception Handling
 class GameException : public exception {
 	string message;
 public:
@@ -202,43 +222,68 @@ void save_game(Population& pop, Army& army, Leadership& lead, Economy& eco, Bank
 	Alliance& alliance, Map& map);
 void load_game(Population& pop, Army& army, Leadership& lead, Economy& eco, Bank& bank, Resource& res,
 	Alliance& alliance, Map& map);
+// LOG SCORE
+void log_score(int turn, const Population& pop, const Army& army, const Economy& eco, const Resource& res);
 
+//Analytics Logger
 template <typename T>
-class Logger {
+class Logger 
+{
 private:
-    string category;
-    T data[1000];      // Fixed-size log buffer
-    int tick;
+	string category;
+	vector<T> data;
 
 public:
-    Logger(const string& name) {
-        category = name;
-        tick = 0;
-    }
+	Logger(const string& name) : category(name) {}
 
-    void log(T value) {
-        if (tick < 1000) {
-            data[tick] = value;
-            tick++;
-        }
-    }
+	void log(T value) 
+	{
+		data.push_back(value);
+	}
 
-    void save_to_file() {
-        string filename = "log_" + category + ".txt";
-        ofstream fout(filename.c_str());
-        if (!fout.is_open()) {
-            cout << "Logger Error: Cannot open file for " << category << endl;
-            return;
-        }
+	void save_to_file() const 
+	{
+		ofstream fout("log_" + category + ".txt");
+		if (!fout.is_open()) {
+			cout << "Logger Error: Cannot open file for " << category << endl;
+			return;
+		}
 
-        fout << "Log for: " << category << "\n";
-        for (int i = 0; i < tick; i++) {
-            fout << "Tick " << i << ": " << data[i] << "\n";
-        }
+		fout << "Log for: " << category << "\n";
+		for (size_t i = 0; i < data.size(); ++i) {
+			fout << "Turn " << i + 1 << ": " << data[i] << "\n";
+		}
+		fout.close();
+	}
 
-        fout.close();
-    }
+	void save_summary() const 
+	{
+		if (data.empty()) 
+			return;
+
+		T min_val = data[0], max_val = data[0];
+		double total = 0;
+		for (T val : data) 
+		{
+			min_val = min(min_val, val);
+			max_val = max(max_val, val);
+			total += val;
+		}
+
+		double average = total / data.size();
+
+		ofstream fout("analytics_summary.txt", ios::app);
+		if (!fout.is_open()) {
+			cout << "Analytics Error: Could not write summary.\n";
+			return;
+		}
+
+		fout << " " << category << " Analytics:\n";
+		fout << "  Turns Logged: " << data.size() << "\n";
+		fout << "  Min: " << min_val << " | Max: " << max_val << " | Average: " << average << "\n";
+		fout << "---------------------------------------\n";
+		fout.close();
+	}
 };
 
 #endif
-#pragma once
