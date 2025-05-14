@@ -1,4 +1,4 @@
-﻿#include "Stronghold.h"
+#include "Stronghold.h"
 Economy::Economy() {
 	treasury = 1000;
 	tax_rate = 10;
