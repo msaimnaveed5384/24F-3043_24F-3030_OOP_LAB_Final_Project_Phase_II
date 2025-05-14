@@ -1,9 +1,11 @@
 #include "Stronghold.h"
 
 void save_game(Population& pop, Army& army, Leadership& lead, Economy& eco, Bank& bank, Resource& res,
-    Alliance& alliance, Map& map) {
+    Alliance& alliance, Map& map) 
+{
     ofstream fout("game_save.txt");
-    if (!fout.is_open()) {
+    if (!fout.is_open()) 
+    {
         throw GameException("Error: Unable to write to save file.");
     }
 
@@ -14,7 +16,8 @@ void save_game(Population& pop, Army& army, Leadership& lead, Economy& eco, Bank
     fout << bank.loan_amount << " " << bank.interest_rate << endl;
     fout << res.food << " " << res.wood << " " << res.stone << " " << res.iron << endl;
     fout << alliance.member_ids[0] << " " << alliance.member_ids[1] << " " << alliance.active << endl;
-    for (int i = 0; i < 4; i++) {
+    for (int i = 0; i < 4; i++) 
+    {
         fout << map.player_positions[i] << " ";
     }
     fout << endl;
@@ -23,13 +26,16 @@ void save_game(Population& pop, Army& army, Leadership& lead, Economy& eco, Bank
 
 
 void load_game(Population& pop, Army& army, Leadership& lead, Economy& eco, Bank& bank, Resource& res,
-    Alliance& alliance, Map& map) {
+    Alliance& alliance, Map& map)
+{
     ifstream fin("game_save.txt");
-    if (!fin.is_open()) {
+    if (!fin.is_open())
+    {
         throw GameException("Error: Save file not found or cannot be opened.");
     }
 
-    try {
+    try
+    {
         fin >> pop.total >> pop.happiness;
         fin >> army.soldiers >> army.morale;
         fin >> lead.leader_name >> lead.popularity;
@@ -46,3 +52,21 @@ void load_game(Population& pop, Army& army, Leadership& lead, Economy& eco, Bank
         throw GameException("Error: Malformed save file or reading issue.");
     }
 }
+
+    void log_score(int turn, const Population & pop, const Army & army, const Economy & eco, const Resource & res)
+    {
+        ofstream fout("score_log.txt", ios::app); // Append mode
+        if (!fout.is_open()) 
+        {
+            throw GameException("Unable to open score_log.txt for writing!");
+        }
+
+        fout << " Turn: " << turn << "\n";
+        fout << " Population: " << pop.total << " |  Happiness: " << pop.happiness << "\n";
+        fout << " Army: " << army.soldiers << " soldiers |  Morale: " << army.morale << "\n";
+        fout << " Treasury: " << eco.treasury << "\n";
+        fout << " Resources -> Food: " << res.food << ", Wood: " << res.wood
+            << ", Stone: " << res.stone << ", Iron: " << res.iron << "\n";
+        fout << "-------------------------------------------\n";
+        fout.close();
+    }
