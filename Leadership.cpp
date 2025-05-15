@@ -16,7 +16,7 @@ void Leadership::status_report() const {
 }
 
 void Leadership::hold_election(const Population& pop) {
-    cout << "\n🗳️ An election is being held to choose the new leader...\n";
+    cout << "\nAn election is being held to choose the new leader...\n";
 
     // Votes are weighted by population count and happiness
     int peasant_votes = pop.society.peasants.count * pop.society.peasants.happiness;
@@ -41,7 +41,5 @@ void Leadership::hold_election(const Population& pop) {
     leader_name = candidates[winner];
     popularity = rand() % 50 + 50;
 
-    cout << "🏆 " << leader_name << " has been elected with popularity " << popularity << "!\n";
+    cout << "EXCELLENT! " << leader_name << " has been elected with popularity " << popularity << "!\n";
 }
-
-
