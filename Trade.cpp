@@ -9,11 +9,13 @@ Trade::Trade() {
 	is_smuggling = false;
 }
 
-void Trade::propose_trade() {
+void Trade::propose_trade() 
+{
 	cout << "Trade proposed from Player " << sender_id << " to Player " << receiver_id << endl;
 	cout << "Offers: " << resources_offered << " | Requests: " << resources_requested << endl;
 }
-void parse_resources(string data, Resource& res, bool add) {
+void parse_resources(string data, Resource& res, bool add) 
+{
 	stringstream ss(data);
 	string item;
 	while (getline(ss, item, ',')) {
@@ -54,7 +56,7 @@ void apply_parsed_string_to_resource(Resource& res, const string& input, bool is
 }
 
 void Trade::attempt_smuggling(Resource& sender_res, Resource& receiver_res) {
-	cout << "⚠️ Attempting smuggling operation..." << endl;
+	cout << "Attempting smuggling operation..." << endl;
 	int chance = rand() % 100;
 
 	if (chance < 60) {
@@ -77,7 +79,7 @@ void Trade::attempt_smuggling(Resource& sender_res, Resource& receiver_res) {
 }
 
 void Trade::complete_trade(Resource& sender_res, Resource& receiver_res) {
-	cout << "📦 Applying trade...\n";
+	cout << "Applying trade...\n";
 
 	// Sender gives offered
 	apply_parsed_string_to_resource(sender_res, resources_offered, false);
@@ -87,5 +89,5 @@ void Trade::complete_trade(Resource& sender_res, Resource& receiver_res) {
 	apply_parsed_string_to_resource(receiver_res, resources_requested, false);
 	apply_parsed_string_to_resource(sender_res, resources_requested, true);
 
-	cout << "✅ Trade completed.\n";
+	cout << "Trade completed.\n";
 }
