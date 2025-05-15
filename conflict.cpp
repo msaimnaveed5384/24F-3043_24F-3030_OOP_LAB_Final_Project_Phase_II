@@ -1,8 +1,9 @@
 #include "Stronghold.h"
 #include <fstream>
 
-void Conflict::declare_war(Player& attacker, Player& defender, Alliance& alliance) {
-    cout << "\n⚔️ " << attacker.name << " has declared war on " << defender.name << "!\n";
+void Conflict::declare_war(Player& attacker, Player& defender, Alliance& alliance) 
+{
+    cout << "\n " << attacker.name << " has declared war on " << defender.name << "!\n";
 
     // Check betrayal
     bool was_allied = (alliance.active &&
@@ -10,7 +11,7 @@ void Conflict::declare_war(Player& attacker, Player& defender, Alliance& allianc
             (alliance.member_ids[1] == attacker.kingdom_id && alliance.member_ids[0] == defender.kingdom_id)));
 
     if (was_allied) {
-        cout << "⚠️ Betrayal! Alliance broken between " << attacker.name << " and " << defender.name << ".\n";
+        cout << "Betrayal! Alliance broken between " << attacker.name << " and " << defender.name << ".\n";
         attacker.army->morale -= 10;
         defender.army->morale += 5;
         alliance.break_alliance();
@@ -23,7 +24,7 @@ void Conflict::declare_war(Player& attacker, Player& defender, Alliance& allianc
     cout << "Attacker power: " << attacker_power << " | Defender power: " << defender_power << endl;
 
     if (attacker_power > defender_power) {
-        cout << "✅ " << attacker.name << " won the battle!\n";
+        cout << " Hurrah! " << attacker.name << " won the battle!\n";
 
         // Damage to defender
         int lost = rand() % 10 + 5;
@@ -34,10 +35,10 @@ void Conflict::declare_war(Player& attacker, Player& defender, Alliance& allianc
         int loot = min(100, defender.resource->gold);
         attacker.resource->gold += loot;
         defender.resource->gold -= loot;
-        cout << "💰 Looted " << loot << " gold.\n";
+        cout << "Looted " << loot << " gold.\n";
     }
     else {
-        cout << "❌ " << attacker.name << " lost the battle!\n";
+        cout << "Hurrah! " << attacker.name << " lost the battle!\n";
 
         int lost = rand() % 10 + 5;
         attacker.army->soldiers = max(0, attacker.army->soldiers - lost);
@@ -47,7 +48,7 @@ void Conflict::declare_war(Player& attacker, Player& defender, Alliance& allianc
         defender.army->morale += 3;
         defender.resource->gold += 50;
         attacker.resource->gold = max(0, attacker.resource->gold - 50);
-        cout << "💥 Attacker lost soldiers and 50 gold.\n";
+        cout << " Attacker lost soldiers and 50 gold.\n";
     }
 
     // Log war
@@ -57,4 +58,3 @@ void Conflict::declare_war(Player& attacker, Player& defender, Alliance& allianc
         << " | A:" << attacker_power << " D:" << defender_power << endl;
     log.close();
 }
-
