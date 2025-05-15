@@ -1,9 +1,11 @@
 #include "Stronghold.h"
-Economy::Economy() {
+Economy::Economy() 
+{
 	treasury = 1000;
 	tax_rate = 10;
 }
-void Economy::collect_tax(Population& pop) {
+void Economy::collect_tax(Population& pop) 
+{
     int tax = (pop.total * tax_rate) / 100;
     treasury += tax;
 
@@ -16,7 +18,7 @@ void Economy::collect_tax(Population& pop) {
     cout << "Merchants feel burdened. Happiness decreased by " << burden << "." << endl;
 
     if (pop.society.merchants.happiness < 30) {
-        cout << "⚠️ Merchants are very unhappy due to excessive taxation!" << endl;
+        cout << "Merchants are very unhappy due to excessive taxation!" << endl;
     }
 }
 
