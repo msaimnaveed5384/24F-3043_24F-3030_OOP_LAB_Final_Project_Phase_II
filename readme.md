@@ -1,113 +1,134 @@
-Readme
+# E-Commerce Management System
 
-# Stronghold Kingdoms – OOP Final Project
-
-A console-based C++ strategy simulation game inspired by medieval kingdom management. This game allows users to control their own kingdom, manage resources, train armies, form alliances, engage in wars, and interact with AI players — all in a structured turn-based system using Object-Oriented Programming principles.
+A console-based C++ application that simulates a complete e-commerce platform with Admin, Seller, and Buyer roles. This project demonstrates object-oriented programming concepts, file-based data persistence, and a modular approach to software design. It is ideal for learning about user management, product handling, order processing, and role-based access control in C++.
 
 ---
 
-Technologies Used
+## Table of Contents
 
-- **Language:** C++
-- **IDE:** Visual Studio / Code::Blocks / Dev C++
-- **Concepts:**  
-  - Object-Oriented Programming (Inheritance, Polymorphism, Encapsulation)
-  - Smart Pointers (`shared_ptr`)
-  - File Handling
-  - Exception Handling
-  - Game Simulation Logic
+- [Features](#features)
+- [Project Structure](#project-structure)
+- [Technical Highlights](#technical-highlights)
+- [How to Run](#how-to-run)
+- [Future Improvements](#future-improvements)
+- [License](#license)
 
 ---
 
-## 📁 Project Structure and Code Breakdown
+## Features
 
-Kingdom Systems (Game Mechanics)
-- **Population.cpp:** Simulates population growth, revolts, and integrates with resource usage.
-- **Army.cpp:** Manages soldier recruitment, morale, feeding, and salaries.
-- **Economy.cpp:** Handles taxes, inflation, and financial summaries.
-- **Bank.cpp:** Allows kingdoms to take or repay loans.
-- **Leadership.cpp:** Manages the leader’s popularity, elections, and leadership changes.
-- **Resource.cpp:** Manages food, wood, stone, and iron gathering and usage.
-- **Event.cpp:** Introduces random disasters/events that impact game variables.
+### 1. Authentication and User Management
+- **Registration** with validation for email, date of birth, password, and role selection.
+- **Login** with role-based access control.
+- **Roles:**
+  - **Admin:** Full platform control.
+  - **Seller:** Manage products and track revenue.
+  - **Buyer:** Browse, search, add to cart, and checkout.
 
-Core Game Engine
-- **main.cpp:** Entry point of the game. Contains the turn-based game loop, user interface, and integration of all modules.
-- **save_load.cpp:** Implements save/load functionality for persisting game state.
+### 2. Admin Features
+- Approve or reject products before they are visible to buyers.
+- Manage buyers and sellers: approve sellers, update seller info, remove accounts.
+- View reports:
+  - Total platform revenue.
+  - Most active buyers by order count.
+- Delete products directly.
+- View all registered buyers/sellers and their products.
 
-Multiplayer Interaction
-- **Player.cpp:** Base class representing each kingdom/player.
-- **AIPlayer (in stronghold.cpp):** Derived from Player, automates AI decisions for non-human players.
+### 3. Seller Features
+- Add products in three categories:
+  - **Electronics** (with warranty)
+  - **Books** (with author name)
+  - **Clothing** (with size)
+- Update products: name, category, price, quantity, and category-specific details.
+- Delete products.
+- View only their listed products.
+- Track revenue per product based on orders.
 
-World Interaction
-- **Map.cpp:** Manages a 4x4 grid showing player positions and movement.
-- **Conflict.cpp:** Contains the logic for declaring and handling wars.
-- **Alliance.cpp:** Implements alliance formation, betrayal checks, and management.
-- **Trade.cpp:** Manages resource trades between players, including smuggling and validation.
-- **Society.cpp:** Simulates social class behavior and its effect on kingdom structure.
+### 4. Buyer Features
+- Browse all approved products.
+- Search products by name.
+- Shopping cart:
+  - Add items (quantity fixed to 1 per add).
+  - Remove items.
+  - View cart contents.
+- Checkout:
+  - Generate an order with unique ID.
+  - Update product quantities in inventory.
+- View order history.
 
----
+### 5. Order Management
+- Orders are saved to `Order.txt` with details:
+  - Order ID, buyer name, date.
+  - Products purchased (ID, seller ID, name, category, price, quantity).
+  - Shipping status (default: Pending).
+  - Total order amount.
 
-## 👥 Team Members & Contributions
-
-### 👨‍💻 Muhammad Saim Naveed
-**Files:**
-- `trade.cpp`
-- `society.cpp`
-- `player.cpp`
-- `map.cpp`
-- `conflict.cpp`
-- `alliance.cpp`
-- `stronghold.cpp`
-- `AIplayer.cpp`
-
-**Responsibilities:**
-- Designed core systems for player interactions, diplomacy (alliances), warfare, and map movement.
-- Developed AI player logic and class inheritance via `AIPlayer`.
-- Implemented the core structure of the game in `stronghold.cpp`.
-
----
-
-### 👨‍💻 Anas Saqib
-**Files:**
-- `Army.cpp`
-- `Bank.cpp`
-- `Economy.cpp`
-- `Event.cpp`
-- `Leadership.cpp`
-- `Population.cpp`
-- `save_load.cpp`
-- `Resource.cpp`
-- `main.cpp`
-
-**Responsibilities:**
-- Created kingdom subsystems: leadership, economy, population, army, and banking.
-- Wrote the main game loop, user interface, and menu control.
-- Developed save/load feature and disaster/random event system.
+### 6. File-Based Data Persistence
+- Data is stored and retrieved using text files:
+  - `Admins.txt` – Admin accounts
+  - `Seller.txt` – Seller accounts
+  - `Buyer.txt` – Buyer accounts
+  - `Products.txt` – All products (with category-specific info)
+  - `Order.txt` – Order records
 
 ---
 
-Key Features
-- ✅ Human and AI players in a turn-based kingdom simulation.
-- ✅ Map-based movement and visual representation (4x4 grid).
-- ✅ Diplomacy system (alliances & betrayal logic).
-- ✅ War declaration and military strength comparison.
-- ✅ Dynamic leadership with popularity-based elections.
-- ✅ Smart resource and economy management.
-- ✅ Persistent save/load functionality for game continuity.
+## Project Structure
+
+```
+├── main.cpp              # Application entry point
+├── AuthSystem.h/.cpp     # Registration & Login logic
+├── FileManager.h/.cpp    # File operations for products, users, and orders
+├── User.h/.cpp           # User, Admin, Seller, Buyer classes
+├── Product.h/.cpp        # Base and derived product classes
+├── Cart.h/.cpp           # Shopping cart template
+├── Order.h/.cpp          # Order management
+├── *.txt                 # Data storage files
+```
 
 ---
 
- How to Run the Project
+## Technical Highlights
 
-1. Open the project in your preferred C++ IDE.
-2. Ensure all `.cpp` and `.h` files are added to the build.
-3. Compile and run `main.cpp`.
-4. Follow on-screen instructions to simulate each player’s turn.
+- **Object-Oriented Programming:** Classes, inheritance, and polymorphism for modular code.
+- **Operator Overloading:**  
+  - `Cart::operator+=` to add products to cart.
+  - `Cart::operator-=` to remove products from cart.
+- **File I/O:** Persistent storage using standard C++ file streams.
+- **Exception Handling:** Input validation and error handling.
+- **Dynamic Casting:** Identify product category at runtime.
 
 ---
 
+## How to Run
 
- Note
-- The game is a console-based simulation project for academic purposes.
-- Designed with modularity and scalability in mind for future enhancements.
+1. **Compile all `.cpp` files together.**  
+   Example using g++:
+   ```bash
+   g++ main.cpp AuthSystem.cpp FileManager.cpp User.cpp Product.cpp Cart.cpp Order.cpp -o ecommerce
+   ```
+   *(Adjust the command if your file names or structure differ.)*
 
+2. **Run the executable.**
+   ```bash
+   ./ecommerce
+   ```
+
+3. **Interact with the system.**
+   - Use the main menu to Login, Register, or view Info.
+   - Follow the role-specific menus for Admin, Seller, or Buyer features.
+
+---
+
+## Future Improvements
+
+- Add shipping status updates for orders.
+- Allow quantity selection for cart items.
+- Implement discounts and promotions.
+- Introduce a GUI interface for enhanced user experience.
+
+---
+
+## License
+
+This project is open source and available under the [MIT License](LICENSE).
